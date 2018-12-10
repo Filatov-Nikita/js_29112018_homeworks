@@ -1,7 +1,7 @@
 let path = require('path');
 
 let conf = {
-    entry: './es6/index.js',
+    entry: './es6/main.js',
     output: {
         path: path.resolve(__dirname, './js'),
         filename: 'main.js',
