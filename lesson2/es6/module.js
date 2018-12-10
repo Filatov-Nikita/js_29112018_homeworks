@@ -21,19 +21,21 @@ export function watchObj(el, callback) {
 
 export class EmailParser {
     constructor(email) {
-        this.email = {email: this.emailHandler(email), context: this}
-        return new Proxy(this.email,
+        this.email = this.emailHandler(email);
+        this.context = this
+        return new Proxy(this,
                 {
                     get(target, name) {
                         const  prop = target['email'];
+                        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        const correct = re.test(prop);
                         switch(name) {
-                            case 'name': return prop.substr(0, prop.indexOf('@'));
+                            case 'name': return correct ? prop.substr(0, prop.indexOf('@')) : null;
                                 break;
-                            case 'domain': return prop.substr(prop.indexOf('@') + 1);
+                            case 'domain': return correct ? prop.substr(prop.indexOf('@') + 1) : null;
                                 break;
                             case 'isCorrect':
-                                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                                return re.test(prop);
+                                return correct
                                 break;
                         }
                     },
