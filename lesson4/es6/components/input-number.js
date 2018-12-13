@@ -16,7 +16,7 @@ export default class InputNumber extends Parody{
         else if(newVal > this.props.max){
             newVal = this.props.max;
         }
-        
+
         this.onChange(newVal);
     }
 
@@ -24,12 +24,12 @@ export default class InputNumber extends Parody{
         return super.render(
             <div className="inputNumber">
                 <input type="button" value="-" className="inputNumber__min"
-                       onclick={() => this._normalizeValue(this.props.value - 1)} 
+                       onclick={() => this._normalizeValue(this.props.value - 1)}
                 />
                 <input type="text" value={this.props.value} className="inputNumber__value"
                        onchange={(e) => this._normalizeValue(e.target.value)} />
                  <input type="button" value="+" className="inputNumber__plus"
-                        onclick={() => this._normalizeValue(this.props.value + 1)} 
+                        onclick={() => this._normalizeValue(this.props.value + 1)}
                  />
             </div>
         );
