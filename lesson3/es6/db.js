@@ -2,7 +2,7 @@
  * Глобальная вероятность успеха для удобства тестирования
  */
 const GLOBAL_PROPABILITY = 0.9;
-const BAD_JSON_PROPABILITY = 0;
+const BAD_JSON_PROPABILITY = 0.2;
 
 /**
  * Получить все записи из хранилища
@@ -10,14 +10,9 @@ const BAD_JSON_PROPABILITY = 0;
  */
 
 export function all(){
-    return new Promise(function(resolve, reject) {
-        TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
-            resolve(serverAnswer(articlesStorage));
-        })
-        .catch(() => {
-            reject(serverAnswer('', 100500, "Propability Error"));
+    return TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
+            return serverAnswer(articlesStorage);
         });
-    });
 }
 
 /**
@@ -26,14 +21,9 @@ export function all(){
  * @param {callable} onAnswer Функция, обрабатывающая ответ от сервера в формате JSON
  */
 export function get(id){
-    return new Promise(function(resolve, reject) {
-        TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
-            resolve(serverAnswer(articlesStorage[mapArticles[id]]));
-        })
-        .catch(() => {
-            reject(serverAnswer('', 100500, "Propability Error"));
-        });
-    })
+    return TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
+        return serverAnswer(articlesStorage[mapArticles[id]]);
+    });
 }
 
 /**
@@ -42,20 +32,16 @@ export function get(id){
  * @param {callable} onAnswer Функция, обрабатывающая ответ от сервера в формате JSON
  */
 export function remove(id){
-    return new Promise(function(resolve, reject) {
-        TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
-            if(id in mapArticles){
-                let num = mapArticles[id];
-                delete mapArticles[id];
-                articlesStorage.splice(num, 1);
-                resolve(serverAnswer(true));
-            } else {
-                resolve(false);
-            }
-        })
-        .catch(() => {
-            reject(serverAnswer('', 100500, "Propability Error"));
-        });
+    return TimeoutPropabiliry(300, GLOBAL_PROPABILITY).then(() => {
+        if(id in mapArticles){
+            let num = mapArticles[id];
+            delete mapArticles[id];
+            articlesStorage.splice(num, 1);
+            return serverAnswer(true);
+        }
+        else{
+            return false;
+        }
     });
 }
 
@@ -63,7 +49,10 @@ export function remove(id){
 function TimeoutPropabiliry(time, probability){
     return new Promise(function(resolve, reject) {
         window.setTimeout(() => {
-            Math.random() < probability ? resolve() : reject();
+            Math.random() < probability ? resolve() : reject({
+                message: 'Propability error',
+                stack: 'server'
+            });
         }, time);
     });
 }

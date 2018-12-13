@@ -5,9 +5,11 @@ async function f() {
     let articles = await ArticlesModel.all();
     let ind = Math.floor(Math.random() * articles.length);
     console.log('select index ' + ind + ', id = ' + articles[ind].id);
+
     let article = await ArticlesModel.one(articles[ind].id);
     let res = await ArticlesModel.remove(article.id);
-    console.log('что с удалением? - ' + res)
+    console.log('что с удалением? - ' + res);
+
     let all = await ArticlesModel.all();
     return all;
 }
