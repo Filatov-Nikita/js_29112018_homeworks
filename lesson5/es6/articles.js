@@ -1,21 +1,15 @@
 /* global fetch FormData */
 
 export async function all(){
-    let data = await makeRequest('/js-hw-api/articles.php');
-    return data;
+    return await new makeRequest1('/js-hw-api/articles.php');
 }
 
 export async function one(id){
-    let data = await makeRequest(`/js-hw-api/articles.php?id=${id}`);
-    return data;
+    return await new makeRequest1(`/js-hw-api/articles.php?id=${id}`);
 }
 
 export async function remove(id){
-    let data = await makeRequest(`/js-hw-api/articles.php?id=${id}`, {
-        method: 'DELETE'
-    });
-
-    return data;
+   return await makeRequest1.delete(`/js-hw-api/articles.php?id=${id}`);
 }
 
 export async function add(article){
@@ -25,47 +19,73 @@ export async function add(article){
         formData.append(name, article[name]);
     }
 
-    let data = await makeRequest('/js-hw-api/articles.php', {
-        method: 'POST',
-        body: formData
-    });
+   return await makeRequest1.post('/js-hw-api/articles.php', formData);
 
-    return data;
 }
 
 export async function edit(id, article){
-    let forServer = {
+   return await makeRequest1.put('/js-hw-api/articles.php', {
         ...article,
         id
-    };
-
-    let data = await makeRequest('/js-frontend-api/articles.php', {
-        method: 'PUT',
-        body: JSON.stringify(forServer)
     });
-
-    return data;
 }
 
-function makeRequest(url, options = {}){
-    options.headers = {
-        'Autorization': 'be28e70e36f635fe8efd77171826ea68'
+
+class makeRequest1 {
+    constructor(url, options = {}) {
+        return makeRequest1.request(null, null, url, options);
     }
-    return fetch(url, options).then((response) => {
-        if(response.status !== 200){
-            return response.text().then((text) => {
-                throw new Error(text);
-            })
+
+    static makeOptions = (options) => {
+        makeRequest1.options = options;
+    }
+
+    static post = (url, data, options = {}) => {
+        return makeRequest1.request('POST', data, url, options);
+    }
+
+    static put = (url, data, options = {}) => {
+        return makeRequest1.request('PUT', data, url, options);
+    }
+
+    static delete = (url, options = {}) => {
+        return makeRequest1.request('DELETE', null, url, options);
+    }
+
+    static request = (method = null, data = null, url, options = {}) => {
+        options = {
+            ...options,
+            ...makeRequest1.options
         }
 
-        return response.json();
-    });
+        switch(method) {
+            case 'POST': {
+                options.method = 'POST';
+                options.body = data;
+                break;
+            }
+            case 'PUT': {
+                options.method = 'PUT';
+                options.body = JSON.stringify(data);
+                break;
+            }
+
+            case 'DELETE': {
+                options.method = 'DELETE';
+                break;
+            }
+        }
+
+        return fetch(url, options).then((response) => {
+            if(response.status !== 200){
+                return response.text().then((text) => {
+                    throw new Error(text);
+                })
+            }
+
+            return response.json();
+        });
+    }
 }
 
-/*
-    GET articles.php -> все статьи в виде массива
-    GET articles.php?id=int -> одна статья в виде объекта || 404
-    POST articles.php body-formData(title, content) -> id || validation errors
-    DELETE articles.php?id=int  -> true || false
-    PUT articles.php body-json -> true || false
-*/
+makeRequest1.makeOptions({headers:{'Autorization': 'be28e70e36f635fe8efd77171826ea68'}})
