@@ -1,16 +1,16 @@
 /* global FormData */
 import server from './server';
 
-export async function all(){
-    let response = await server.get('articles.php');
+export async function auth(login, password){
+    let formData = new FormData();
+    formData.append('login', login);
+    formData.append('password', password);
+    let response = await server.post('auth.php', formData);
     return response.data;
 }
 
-export async function one(id){
-    let response = await server.get(`articles.php`, {
-        params: {id}
-    });
-
+export async function all(){
+    let response = await server.get('articles.php');
     return response.data;
 }
 
@@ -31,15 +31,5 @@ export async function add(article){
 
     let response = await server.post('articles.php', formData);
 
-    return response.data;
-}
-
-export async function edit(id, article){
-    let forServer = {
-        ...article,
-        id
-    };
-
-    let response = await server.put('articles.php', forServer);
     return response.data;
 }

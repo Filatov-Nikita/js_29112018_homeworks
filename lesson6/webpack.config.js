@@ -2,7 +2,7 @@
 let path = require('path');
 
 let conf = {
-    entry: './es6/lesson6-axios/index.js',
+    entry: './es6/index.js',
     //entry: './es6/lesson5-hw-basis/index.js',
     output: {
         path: path.resolve(__dirname, './js'),
@@ -13,7 +13,7 @@ let conf = {
         overlay: true,
         proxy: {
             '/js-6-api/**': {
-                target: 'http://localhost/',
+                target: 'http://faceprog.ru/',
                 secure: false,
                 changeOrigin: true
             }
@@ -31,7 +31,7 @@ let conf = {
 };
 
 module.exports = (env, options) => {
-    conf.devtool = options.mode === "production" ? 
+    conf.devtool = options.mode === "production" ?
                     false :
                     "cheap-module-eval-source-map";
 

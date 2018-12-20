@@ -1,11 +1,14 @@
 import axios from 'axios';
 
 let server = axios.create({
-	baseURL: '/js-hw-api/'
+	baseURL: '/js-6-api/'
 });
 
 server.interceptors.request.use(function(request){
-    request.headers.Autorization =  '50537266ded1d3eb1e6923f7f4b2f484';
+    let token = localStorage.getItem('accessToken');
+    if(token) {
+        request.headers.Authorization = token;
+    }
     return request;
 });
 
