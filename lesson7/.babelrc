@@ -4,6 +4,6 @@
     ],
     "plugins": [
         "@babel/plugin-proposal-class-properties",
-        ["@babel/plugin-transform-react-jsx", { "pragma": "ParodyDom" }]
+        ["@babel/plugin-transform-react-jsx"]
     ]
 }
