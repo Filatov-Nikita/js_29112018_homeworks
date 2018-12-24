@@ -1,7 +1,8 @@
 import * as ArticlesModel from './articles';
 import 'babel-polyfill';
-
+try {
 async function list() {
+    throw new Error(1);
     let articles = await ArticlesModel.all();
     let el = document.querySelector('.list');
     for(let item of articles) {
@@ -53,3 +54,9 @@ getAll.addEventListener(
             console.log(e.stack);
         })
     );
+
+}
+catch(e) {
+    console.log(e);
+
+}
